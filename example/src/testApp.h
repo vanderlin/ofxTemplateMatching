@@ -22,12 +22,12 @@ class testApp : public ofBaseApp{
     void gotMessage(ofMessage msg);
 	
 	ofxTemplateMatching             matcher;
+    vector <MatchObject>            objects;
     vector <TemplateMatch>          matches;
     
     ofVideoGrabber                  grabber;
     ofxCvColorImage                 colorImage;
     ofxCvGrayscaleImage             grayImage;
-    vector <ofxCvGrayscaleImage>    objects;
     ofRectangle                     cropRect;
     ofPoint                         downPos;
     bool                            bPressedInside;

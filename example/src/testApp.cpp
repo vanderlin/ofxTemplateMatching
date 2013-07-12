@@ -3,6 +3,7 @@
 //--------------------------------------------------------------
 void testApp::setup() {
 
+    ofBackgroundHex(0x65868D);
     bPressedInside = false;
     int w = 320; int h = 240;
     grabber.initGrabber(w, h);
@@ -25,7 +26,6 @@ void testApp::update() {
     
         // clear out all the old matches
         matches.clear();
-        
         
         // look for any of the objects in the source image
         for (int i=0; i<objects.size(); i++) {
@@ -52,16 +52,26 @@ void testApp::draw() {
     grayImage.draw(10, 10);
 
     ofNoFill();
-    ofSetColor(255, 0, 255);
+    ofSetHexColor(0xF5ECCF);
     ofRect(cropRect);
     
     float ypos = 10;
     for(int i=0; i<objects.size(); i++) {
+        
+        ofPushMatrix();
+        ofTranslate(ofGetWidth()-(objects[i].getWidth()+10), ypos);
         ofSetColor(255);
-        objects[i].draw(ofGetWidth()-(objects[i].getWidth()+10), ypos);
+        objects[i].draw(0, 0);
         ofSetColor(255, 255, 0);
-        ofDrawBitmapString(ofToString(i), ofGetWidth()-(objects[i].getWidth()), ypos+15);
+        ofDrawBitmapString(ofToString(i), 0, 15);
+        for(int j=0; j<objects[i].pts.size(); j++) {
+            ofSetHexColor(0xF5ECCF);
+            ofCircle(objects[i].pts[j], 2);
+        }
+        ofPopMatrix();
+        
         ypos += objects[i].getHeight()+10;
+        
     }
     
     ofPushMatrix();
@@ -73,15 +83,15 @@ void testApp::draw() {
     }
     ofPopMatrix();
  
-    ofSetColor(255, 0, 0);
-    ofDrawBitmapString("FPS: "+ofToString(ofGetFrameRate(),0)+"\nConfidence Min:"+ofToString(confidenceMin)+"%", 10, grabber.getHeight()+30);
+    ofSetHexColor(0xF5ECCF);
+    ofDrawBitmapString("Draw a bounding box around object\nPress spacebar to capture object\nUp/Down to change confidence threshold\nFPS: "+ofToString(ofGetFrameRate(),0)+"\nConfidence Min:"+ofToString(confidenceMin)+"%", 10, grabber.getHeight()+30);
 }
 
 //--------------------------------------------------------------
 void testApp::keyPressed(int key){
 
     if(key == ' ') {
-        objects.push_back(ofxCvGrayscaleImage());
+        objects.push_back(MatchObject());
         objects.back().allocate(cropRect.width, cropRect.height);
         grayImage.setROI(cropRect.x-10, cropRect.y-10, cropRect.width, cropRect.height);
         objects.back().setFromPixels(grayImage.getRoiPixels(), cropRect.width, cropRect.height);
@@ -113,16 +123,12 @@ void testApp::mouseMoved(int x, int y ){
 //--------------------------------------------------------------
 void testApp::mouseDragged(int x, int y, int button){
     if(bPressedInside) {
-        //if(x > cropRect.x+50) {
+        if(x > downPos.x+5 && y > downPos.y+5) {
             cropRect.width  = x - downPos.x;
-        //}
-        //if(y > cropRect.y+50) {
             cropRect.height = y - downPos.y;
-        //}
-        
-        if(cropRect.height+cropRect.y>grabber.getHeight()) cropRect.height = (grabber.getHeight()-cropRect.y)+10;
-        if(cropRect.width+cropRect.x>grabber.getWidth()) cropRect.width = (grabber.getWidth()-cropRect.x)+10;
-
+            if(cropRect.height+cropRect.y>grabber.getHeight()) cropRect.height = (grabber.getHeight()-cropRect.y)+10;
+            if(cropRect.width+cropRect.x>grabber.getWidth()) cropRect.width = (grabber.getWidth()-cropRect.x)+10;
+        }
     }
 }
 
