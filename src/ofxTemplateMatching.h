@@ -22,7 +22,7 @@ public:
     void draw() {
         ofNoFill();
         ofSetColor(255, 255, 0);
-        ofRect(*this);
+        ofDrawRectangle(*this);
         ofDrawBitmapString(ofToString(objectID), getCenter());
         
     }
