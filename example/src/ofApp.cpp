@@ -94,7 +94,7 @@ void testApp::keyPressed(int key){
         objects.push_back(MatchObject());
         objects.back().allocate(cropRect.width, cropRect.height);
         grayImage.setROI(cropRect.x-10, cropRect.y-10, cropRect.width, cropRect.height);
-        objects.back().setFromPixels(grayImage.getRoiPixels(), cropRect.width, cropRect.height);
+        objects.back().setFromPixels(grayImage.getRoiPixels().getPixels(), cropRect.width, cropRect.height);
         grayImage.resetROI();
     }
     
